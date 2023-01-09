@@ -36,6 +36,13 @@ const dbConnect = async () => {
       const product = await Products.findOne(query);
       res.send(product);
     });
+
+    app.get("/products/category/:name", async (req, res) => {
+      const name = req.params.name;
+      const query = { category: name };
+      const categoryProducts = await Products.find(query).toArray();
+      res.send(categoryProducts);
+    });
   } finally {
   }
 };
