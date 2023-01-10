@@ -24,6 +24,13 @@ const dbConnect = async () => {
     const Users = client.db(process.env.DB_USERNAME).collection("users");
     const Products = client.db(process.env.DB_USERNAME).collection("products");
     const Reviews = client.db(process.env.DB_USERNAME).collection("reviews");
+    const Cart = client.db(process.env.DB_USERNAME).collection("cart");
+
+    app.post("/cart", async (req, res) => {
+      const product = req.body;
+      const result = await Cart.insertOne(product);
+      res.send(result);
+    });
 
     app.get("/reviews/:id", async (req, res) => {
       const query = { productId: req.params.id };
