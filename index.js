@@ -23,6 +23,19 @@ const dbConnect = async () => {
   try {
     const Users = client.db(process.env.DB_USERNAME).collection("users");
     const Products = client.db(process.env.DB_USERNAME).collection("products");
+    const Reviews = client.db(process.env.DB_USERNAME).collection("reviews");
+
+    app.get("/reviews/:id", async (req, res) => {
+      const query = { productId: req.params.id };
+      const reviews = await Reviews.find(query).toArray();
+      res.send(reviews);
+    });
+
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      const result = await Reviews.insertOne(review);
+      res.send(result);
+    });
 
     app.get("/products", async (req, res) => {
       const query = {};
