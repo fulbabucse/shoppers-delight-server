@@ -26,6 +26,12 @@ const dbConnect = async () => {
     const Reviews = client.db(process.env.DB_USERNAME).collection("reviews");
     const Cart = client.db(process.env.DB_USERNAME).collection("cart");
 
+    app.get("/cart/:email", async (req, res) => {
+      const query = { email: req.params.email };
+      const cartProducts = await Cart.find(query).toArray();
+      res.send(cartProducts);
+    });
+
     app.post("/cart", async (req, res) => {
       const product = req.body;
       const result = await Cart.insertOne(product);
