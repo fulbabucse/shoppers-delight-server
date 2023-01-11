@@ -77,8 +77,10 @@ const dbConnect = async () => {
     app.get("/products", async (req, res) => {
       const startPrice = req.query.start;
       const endPrice = req.query.end;
+      const rating = req.query.rating;
       const query = {
         price: { $gt: parseInt(startPrice), $lt: parseInt(endPrice) },
+        rating: { $gt: parseInt(rating) },
       };
       const products = await Products.find(query).toArray();
       res.send(products);
@@ -95,9 +97,11 @@ const dbConnect = async () => {
       const startPrice = req.query.start;
       const endPrice = req.query.end;
       const name = req.params.name;
+      const rating = req.query.rating;
       const query = {
         category: name,
         price: { $gt: parseInt(startPrice), $lt: parseInt(endPrice) },
+        rating: { $gt: parseInt(rating) },
       };
       const categoryProducts = await Products.find(query).toArray();
       res.send(categoryProducts);
