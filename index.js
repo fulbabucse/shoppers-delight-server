@@ -26,6 +26,12 @@ const dbConnect = async () => {
     const Reviews = client.db(process.env.DB_USERNAME).collection("reviews");
     const Cart = client.db(process.env.DB_USERNAME).collection("cart");
 
+    app.delete("/cart/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const deleted = await Cart.deleteOne(query);
+      res.send(deleted);
+    });
+
     app.get("/cart/:email", async (req, res) => {
       const query = { email: req.params.email };
       const cartProducts = await Cart.find(query).toArray();
