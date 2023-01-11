@@ -74,6 +74,12 @@ const dbConnect = async () => {
       res.send(result);
     });
 
+    app.get("/products/similar/:category", async (req, res) => {
+      const query = { category: req.params.category };
+      const similarProducts = await Products.find(query).toArray();
+      res.send(similarProducts);
+    });
+
     app.get("/products", async (req, res) => {
       const startPrice = req.query.start;
       const endPrice = req.query.end;
