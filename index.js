@@ -13,13 +13,6 @@ app.get("/", (req, res) => {
   res.send("Welcome to Shopper's Delight Server");
 });
 
-// jwt.verify(token, process.env.JWT_ACCESS_TOKEN, (err, decoded) => {
-//   if (err) {
-//     return res.status(403).send({ message: "Forbidden access" });
-//   }
-//   req.decoded = decoded;
-//   next();
-// });
 const verifyToken = (req, res, next) => {
   const authToken = req.headers.authorization;
 
@@ -82,7 +75,11 @@ const dbConnect = async () => {
     });
 
     app.get("/products", async (req, res) => {
-      const query = {};
+      const startPrice = req.query.start;
+      const endPrice = req.query.end;
+      const query = {
+        price: { $gt: parseInt(startPrice), $lt: parseInt(endPrice) },
+      };
       const products = await Products.find(query).toArray();
       res.send(products);
     });
