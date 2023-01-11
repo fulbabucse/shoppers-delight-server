@@ -2,6 +2,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
 require("dotenv").config();
 
@@ -11,6 +12,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Welcome to Shopper's Delight Server");
 });
+
+// const verifyToken = (req, res, next) => {};
 
 const url = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.7ywptfp.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(url, {
@@ -74,6 +77,15 @@ const dbConnect = async () => {
       const query = { category: name };
       const categoryProducts = await Products.find(query).toArray();
       res.send(categoryProducts);
+    });
+
+    app.get("/jwt", async (req, res) => {
+      const email = req.query.email;
+      const token = jwt.sign({ email }, process.env.JWT_ACCESS_TOKEN_SECRET, {
+        expiresIn: "1d",
+      });
+      res.send({ accessToken: token });
+      console.log(token);
     });
   } finally {
   }
