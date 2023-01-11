@@ -92,8 +92,13 @@ const dbConnect = async () => {
     });
 
     app.get("/products/category/:name", async (req, res) => {
+      const startPrice = req.query.start;
+      const endPrice = req.query.end;
       const name = req.params.name;
-      const query = { category: name };
+      const query = {
+        category: name,
+        price: { $gt: parseInt(startPrice), $lt: parseInt(endPrice) },
+      };
       const categoryProducts = await Products.find(query).toArray();
       res.send(categoryProducts);
     });
