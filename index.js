@@ -13,7 +13,29 @@ app.get("/", (req, res) => {
   res.send("Welcome to Shopper's Delight Server");
 });
 
-// const verifyToken = (req, res, next) => {};
+// jwt.verify(token, process.env.JWT_ACCESS_TOKEN, (err, decoded) => {
+//   if (err) {
+//     return res.status(403).send({ message: "Forbidden access" });
+//   }
+//   req.decoded = decoded;
+//   next();
+// });
+const verifyToken = (req, res, next) => {
+  const authToken = req.headers.authorization;
+
+  if (!authToken) {
+    return res.status(401).send({ message: "unauthorized access" });
+  }
+
+  const token = authToken.split(" ")[1];
+  jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).send({ message: "forbidden access" });
+    }
+    req.decoded = decoded;
+    next();
+  });
+};
 
 const url = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.7ywptfp.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(url, {
@@ -35,7 +57,7 @@ const dbConnect = async () => {
       res.send(deleted);
     });
 
-    app.get("/cart/:email", async (req, res) => {
+    app.get("/cart/:email", verifyToken, async (req, res) => {
       const query = { email: req.params.email };
       const cartProducts = await Cart.find(query).toArray();
       res.send(cartProducts);
@@ -85,7 +107,6 @@ const dbConnect = async () => {
         expiresIn: "1d",
       });
       res.send({ accessToken: token });
-      console.log(token);
     });
   } finally {
   }
