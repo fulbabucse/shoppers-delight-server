@@ -93,12 +93,18 @@ const dbConnect = async () => {
       const startPrice = req.query.start;
       const endPrice = req.query.end;
       const rating = req.query.rating;
+      const page = parseInt(req.query.page);
+      const size = parseInt(req.query.size);
       const query = {
         price: { $gt: parseInt(startPrice), $lt: parseInt(endPrice) },
         rating: { $gt: parseInt(rating) },
       };
-      const products = await Products.find(query).toArray();
-      res.send(products);
+      const products = await Products.find(query)
+        .skip(page * size)
+        .limit(size)
+        .toArray();
+      const count = await Products.estimatedDocumentCount();
+      res.send({ products, count });
     });
 
     app.get("/products/:id", async (req, res) => {
