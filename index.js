@@ -43,6 +43,15 @@ const dbConnect = async () => {
     const Products = client.db(process.env.DB_USERNAME).collection("products");
     const Reviews = client.db(process.env.DB_USERNAME).collection("reviews");
     const Cart = client.db(process.env.DB_USERNAME).collection("cart");
+    const FeatureProducts = client
+      .db(process.env.DB_USERNAME)
+      .collection("featureProducts");
+
+    app.get("/feature-products", async (req, res) => {
+      const query = {};
+      const products = await FeatureProducts.find(query).toArray();
+      res.send(products);
+    });
 
     app.delete("/cart/:id", async (req, res) => {
       const query = { _id: ObjectId(req.params.id) };
