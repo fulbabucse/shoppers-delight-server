@@ -49,7 +49,13 @@ const dbConnect = async () => {
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
 
-    app.post("/payments", async (req, res) => {
+    app.delete("/cart/clear-after-payments", verifyToken, async (req, res) => {
+      const query = { email: req.query.email };
+      const deleted = await Cart.deleteMany(query);
+      res.send(deleted);
+    });
+
+    app.post("/payments", verifyToken, async (req, res) => {
       const paymentInfo = req.body;
       const payments = await Payments.insertOne(paymentInfo);
       res.send(payments);
