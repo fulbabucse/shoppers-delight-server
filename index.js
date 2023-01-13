@@ -48,11 +48,12 @@ const dbConnect = async () => {
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
 
-    app.post("/create-payment-intent", async (req, res) => {
+    app.post("/create-payment-intent", verifyToken, async (req, res) => {
       const orders = req.body;
+      const amount = parseInt(orders.price) * 100;
       const paymentIntent = await stripe.paymentIntents.create({
         currency: "usd",
-        amount: 50000,
+        amount: amount,
         automatic_payment_methods: {
           enabled: true,
         },
@@ -60,7 +61,7 @@ const dbConnect = async () => {
       res.send({ clientSecret: paymentIntent.client_secret });
     });
 
-    app.get("/config", (req, res) => {
+    app.get("/config", verifyToken, (req, res) => {
       res.send({ publishableKey: process.env.STRIPE_PK });
     });
 
