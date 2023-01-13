@@ -49,6 +49,18 @@ const dbConnect = async () => {
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
 
+    app.get("/payments/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const order = await Payments.findOne(query);
+      res.send(order);
+    });
+
+    app.get("/payments", async (req, res) => {
+      const query = { email: req.query.email };
+      const orders = await Payments.find(query).toArray();
+      res.send(orders);
+    });
+
     app.delete("/cart/clear-after-payments", verifyToken, async (req, res) => {
       const query = { email: req.query.email };
       const deleted = await Cart.deleteMany(query);
