@@ -53,7 +53,7 @@ const dbConnect = async () => {
       const amount = parseInt(orders.price) * 100;
       const paymentIntent = await stripe.paymentIntents.create({
         currency: "usd",
-        amount: amount,
+        amount: amount && amount,
         automatic_payment_methods: {
           enabled: true,
         },
