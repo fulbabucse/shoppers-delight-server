@@ -1,10 +1,11 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 const app = express();
 const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
-require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SK);
 
 app.use(cors());
 app.use(express.json());
@@ -46,6 +47,22 @@ const dbConnect = async () => {
     const FeatureProducts = client
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
+
+    app.post("/create-payment-intent", async (req, res) => {
+      const orders = req.body;
+      const paymentIntent = await stripe.paymentIntents.create({
+        currency: "usd",
+        amount: 50000,
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+      res.send({ clientSecret: paymentIntent.client_secret });
+    });
+
+    app.get("/config", (req, res) => {
+      res.send({ publishableKey: process.env.STRIPE_PK });
+    });
 
     app.get("/feature-products", async (req, res) => {
       const query = {};
