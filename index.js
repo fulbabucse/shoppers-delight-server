@@ -44,9 +44,16 @@ const dbConnect = async () => {
     const Products = client.db(process.env.DB_USERNAME).collection("products");
     const Reviews = client.db(process.env.DB_USERNAME).collection("reviews");
     const Cart = client.db(process.env.DB_USERNAME).collection("cart");
+    const Payments = client.db(process.env.DB_USERNAME).collection("payments");
     const FeatureProducts = client
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
+
+    app.post("/payments", async (req, res) => {
+      const paymentInfo = req.body;
+      const payments = await Payments.insertOne(paymentInfo);
+      res.send(payments);
+    });
 
     app.post("/create-payment-intent", verifyToken, async (req, res) => {
       const orders = req.body;
