@@ -45,9 +45,16 @@ const dbConnect = async () => {
     const Reviews = client.db(process.env.DB_USERNAME).collection("reviews");
     const Cart = client.db(process.env.DB_USERNAME).collection("cart");
     const Payments = client.db(process.env.DB_USERNAME).collection("payments");
+    const Billing = client.db(process.env.DB_USERNAME).collection("billing");
     const FeatureProducts = client
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
+
+    app.post("/billing", async (req, res) => {
+      const information = req.body;
+      const billed = await Billing.insertOne(information);
+      res.send(billed);
+    });
 
     app.get("/users", async (req, res) => {
       const query = {};
