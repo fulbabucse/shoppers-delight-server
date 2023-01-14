@@ -62,7 +62,7 @@ const dbConnect = async () => {
       res.send(billed);
     });
 
-    app.get("/users/admin", async (req, res) => {
+    app.get("/users/admin", verifyToken, async (req, res) => {
       const query = { email: req.query.email };
       const user = await Users.findOne(query);
       res.send({ isAdmin: user?.role === "admin" });
