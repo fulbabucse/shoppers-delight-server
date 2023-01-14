@@ -49,6 +49,27 @@ const dbConnect = async () => {
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
 
+    app.get("/users", async (req, res) => {
+      const query = {};
+      const users = await Users.find(query).toArray();
+      res.send(users);
+    });
+
+    app.put("/users", async (req, res) => {
+      const user = req.body;
+      const filter = { email: req.query.email };
+      const options = { upsert: true };
+      const updateInfo = {
+        $set: {
+          name: user?.name,
+          photoURL: user?.photoURL,
+          email: user?.email,
+        },
+      };
+      const updated = await Users.updateOne(filter, updateInfo, options);
+      res.send(updated);
+    });
+
     app.get("/payments/:id", async (req, res) => {
       const query = { _id: ObjectId(req.params.id) };
       const order = await Payments.findOne(query);
