@@ -62,6 +62,12 @@ const dbConnect = async () => {
       res.send(billed);
     });
 
+    app.get("/users/admin", async (req, res) => {
+      const query = { email: req.query.email };
+      const user = await Users.findOne(query);
+      res.send({ isAdmin: user?.role === "admin" });
+    });
+
     app.get("/users", async (req, res) => {
       const query = {};
       const users = await Users.find(query).toArray();
