@@ -50,7 +50,13 @@ const dbConnect = async () => {
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
 
-    app.post("/billing", async (req, res) => {
+    app.get("/billing", verifyToken, async (req, res) => {
+      const query = { email: req.query.email };
+      const users = await Billing.findOne(query);
+      res.send(users);
+    });
+
+    app.post("/billing", verifyToken, async (req, res) => {
       const information = req.body;
       const billed = await Billing.insertOne(information);
       res.send(billed);
