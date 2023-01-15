@@ -140,6 +140,12 @@ const dbConnect = async () => {
       res.send(products);
     });
 
+    app.get("/cart", async (req, res) => {
+      const query = {};
+      const cart = await Cart.find(query).toArray();
+      res.send(cart);
+    });
+
     app.delete("/cart/:id", async (req, res) => {
       const query = { _id: ObjectId(req.params.id) };
       const deleted = await Cart.deleteOne(query);
