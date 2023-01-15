@@ -68,7 +68,7 @@ const dbConnect = async () => {
       res.send({ isAdmin: user?.role === "admin" });
     });
 
-    app.get("/users", async (req, res) => {
+    app.get("/users", verifyToken, async (req, res) => {
       const query = {};
       const users = await Users.find(query).toArray();
       res.send(users);
@@ -95,7 +95,7 @@ const dbConnect = async () => {
       res.send(order);
     });
 
-    app.get("/complete/payments", async (req, res) => {
+    app.get("/complete/payments", verifyToken, async (req, res) => {
       const query = {};
       const complete = await Payments.find(query)
         .sort({
@@ -150,7 +150,7 @@ const dbConnect = async () => {
       res.send(products);
     });
 
-    app.get("/cart", async (req, res) => {
+    app.get("/cart", verifyToken, async (req, res) => {
       const query = {};
       const cart = await Cart.find(query).toArray();
       res.send(cart);
