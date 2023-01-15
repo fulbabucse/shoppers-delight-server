@@ -176,6 +176,18 @@ const dbConnect = async () => {
       res.send(similarProducts);
     });
 
+    app.get("/products/all", async (req, res) => {
+      const query = {};
+      const page = parseInt(req.query.page);
+      const size = parseInt(req.query.size);
+      const products = await Products.find(query)
+        .skip(page * size)
+        .limit(size)
+        .toArray();
+      const count = await Products.estimatedDocumentCount();
+      res.send({ products, count });
+    });
+
     app.get("/products", async (req, res) => {
       const startPrice = req.query.start;
       const endPrice = req.query.end;
