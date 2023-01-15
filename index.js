@@ -95,6 +95,16 @@ const dbConnect = async () => {
       res.send(order);
     });
 
+    app.get("/complete/payments", async (req, res) => {
+      const query = {};
+      const complete = await Payments.find(query)
+        .sort({
+          createAt: -1,
+        })
+        .toArray();
+      res.send(complete);
+    });
+
     app.get("/payments", async (req, res) => {
       const query = { email: req.query.email };
       const orders = await Payments.find(query)
