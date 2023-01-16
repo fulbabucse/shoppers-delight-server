@@ -53,6 +53,12 @@ const dbConnect = async () => {
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
 
+    app.post("/categories", async (req, res) => {
+      const categoryInfo = req.body;
+      const uploadCategory = await Categories.insertOne(categoryInfo);
+      res.send(uploadCategory);
+    });
+
     app.get("/categories", async (req, res) => {
       const query = {};
       const categories = await Categories.find(query).toArray();
@@ -211,6 +217,23 @@ const dbConnect = async () => {
         .toArray();
       const count = await Products.estimatedDocumentCount();
       res.send({ products, count });
+    });
+
+    app.post("/products", verifyToken, async (req, res) => {
+      const productInfo = req.body;
+      const product = {
+        title: productInfo.title,
+        category: productInfo.category,
+        description: productInfo.description,
+        brand: productInfo.brand,
+        stock: parseInt(productInfo.stock),
+        price: parseFloat(productInfo.price),
+        rating: parseFloat(productInfo.rating),
+        thumbnail: productInfo.thumbnail,
+        discountPercentage: parseFloat(productInfo.discountPercentage),
+      };
+      const uploadProduct = await Products.insertOne(product);
+      res.send(uploadProduct);
     });
 
     app.get("/products", async (req, res) => {
