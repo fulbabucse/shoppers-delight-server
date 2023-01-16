@@ -46,9 +46,18 @@ const dbConnect = async () => {
     const Cart = client.db(process.env.DB_USERNAME).collection("cart");
     const Payments = client.db(process.env.DB_USERNAME).collection("payments");
     const Billing = client.db(process.env.DB_USERNAME).collection("billing");
+    const Categories = client
+      .db(process.env.DB_USERNAME)
+      .collection("categories");
     const FeatureProducts = client
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
+
+    app.get("/categories", async (req, res) => {
+      const query = {};
+      const categories = await Categories.find(query).toArray();
+      res.send(categories);
+    });
 
     app.get("/billing", verifyToken, async (req, res) => {
       const query = { email: req.query.email };
