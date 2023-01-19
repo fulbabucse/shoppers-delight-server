@@ -247,6 +247,7 @@ const dbConnect = async () => {
       const products = await Products.find(query)
         .skip(page * size)
         .limit(size)
+        .sort({ createAt: -1 })
         .toArray();
       const count = await Products.estimatedDocumentCount();
       res.send({ products, count });
@@ -265,6 +266,7 @@ const dbConnect = async () => {
         thumbnail: productInfo.thumbnail,
         discountPercentage: parseFloat(productInfo.discountPercentage),
         images: productInfo.images,
+        createAt: new Date().getTime(),
       };
       const uploadProduct = await Products.insertOne(product);
       res.send(uploadProduct);
@@ -283,6 +285,7 @@ const dbConnect = async () => {
       const products = await Products.find(query)
         .skip(page * size)
         .limit(size)
+        .sort({ createAt: -1 })
         .toArray();
       const count = await Products.estimatedDocumentCount();
       res.send({ products, count });
@@ -305,7 +308,11 @@ const dbConnect = async () => {
         price: { $gt: parseInt(startPrice), $lt: parseInt(endPrice) },
         rating: { $gt: parseInt(rating) },
       };
-      const categoryProducts = await Products.find(query).toArray();
+      const categoryProducts = await Products.find(query)
+        .sort({
+          createAt: -1,
+        })
+        .toArray();
       res.send(categoryProducts);
     });
 
