@@ -231,6 +231,7 @@ const dbConnect = async () => {
         rating: parseFloat(productInfo.rating),
         thumbnail: productInfo.thumbnail,
         discountPercentage: parseFloat(productInfo.discountPercentage),
+        images: productInfo.images,
       };
       const uploadProduct = await Products.insertOne(product);
       res.send(uploadProduct);
