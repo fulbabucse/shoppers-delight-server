@@ -46,6 +46,7 @@ const dbConnect = async () => {
     const Cart = client.db(process.env.DB_USERNAME).collection("cart");
     const Payments = client.db(process.env.DB_USERNAME).collection("payments");
     const Billing = client.db(process.env.DB_USERNAME).collection("billing");
+    const Sliders = client.db(process.env.DB_USERNAME).collection("sliders");
     const Categories = client
       .db(process.env.DB_USERNAME)
       .collection("categories");
@@ -53,16 +54,42 @@ const dbConnect = async () => {
       .db(process.env.DB_USERNAME)
       .collection("featureProducts");
 
-    app.post("/categories", async (req, res) => {
-      const categoryInfo = req.body;
-      const uploadCategory = await Categories.insertOne(categoryInfo);
-      res.send(uploadCategory);
+    // sliders API
+
+    app.delete("/sliders/:id", verifyToken, async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const deleted = await Sliders.deleteOne(query);
+      res.send(deleted);
+    });
+
+    app.get("/sliders", async (req, res) => {
+      const query = {};
+      const sliders = await Sliders.find(query).toArray();
+      res.send(sliders);
+    });
+
+    app.post("/sliders", verifyToken, async (req, res) => {
+      const sliderInfo = req.body;
+      const sliderResult = await Sliders.insertOne(sliderInfo);
+      res.send(sliderResult);
+    });
+
+    app.delete("/categories/:id", verifyToken, async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const deleted = await Categories.deleteOne(query);
+      res.send(deleted);
     });
 
     app.get("/categories", async (req, res) => {
       const query = {};
       const categories = await Categories.find(query).toArray();
       res.send(categories);
+    });
+
+    app.post("/categories", verifyToken, async (req, res) => {
+      const categoryInfo = req.body;
+      const uploadCategory = await Categories.insertOne(categoryInfo);
+      res.send(uploadCategory);
     });
 
     app.get("/billing", verifyToken, async (req, res) => {
@@ -199,6 +226,12 @@ const dbConnect = async () => {
       const review = req.body;
       const result = await Reviews.insertOne(review);
       res.send(result);
+    });
+
+    app.delete("/products/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const product = await Products.deleteOne(query);
+      res.send(product);
     });
 
     app.get("/products/similar/:category", async (req, res) => {
