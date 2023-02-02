@@ -1,8 +1,9 @@
 // Import Router from Express
 const router = require("express").Router();
 
-const adminController = require("../controllers/adminController");
+const userController = require("../controllers/usersController");
 
-router.get("/", adminController.getAllUsers);
+router.get("/", userController.getAllUsers);
+router.put("/", userController.updateUser);
 
 module.exports = router;

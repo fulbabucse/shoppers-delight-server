@@ -55,3 +55,52 @@ exports.getCategoryProducts = async (req, res) => {
   });
   res.send(newProducts);
 };
+
+exports.getSingleProduct = async (req, res) => {
+  try {
+    const product = await Product.findOne({ _id: req.params.id });
+    res.status(200).send(product);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+exports.getSimilarProducts = async (req, res) => {
+  try {
+    const product = await Product.find({ category: req.params.category });
+    res.status(200).send(product);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+exports.postProduct = async (req, res, next) => {
+  try {
+    const product = new Product({
+      title: req.body.title,
+      description: req.body.description,
+      price: parseInt(req.body.price),
+      discountPercentage: parseFloat(req.body.discountPercentage),
+      rating: parseFloat(req.body.rating),
+      stock: parseInt(req.body.stock),
+      brand: req.body.brand,
+      category: req.body.category,
+      thumbnail: req.body.thumbnail,
+      images: req.body.images,
+    });
+    const result = await product.save();
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+exports.deleteProduct = async (req, res, next) => {
+  try {
+    const deleteProduct = await Product.deleteOne({ _id: req.params.id });
+    res.send(deleteProduct);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: error.message });
+  }
+};
