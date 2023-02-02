@@ -35,9 +35,9 @@ app.use("/sliders", sliderRoutes);
 app.get("/", (req, res) => {
   res.send("Welcome to Shopper's Delight Server");
 });
+connectDatabase(process.env.DATABASE_URI);
 
 // Listen Port
 app.listen(port, () => {
   console.log("Welcome to Shopper's Delight Server Port:", port);
-  connectDatabase(process.env.DATABASE_URI);
 });
