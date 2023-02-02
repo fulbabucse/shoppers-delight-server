@@ -3,23 +3,28 @@ const router = require("express").Router();
 
 // Controller
 const paymentController = require("../controllers/paymentsController");
+const tokenCheck = require("../middleware/tokenCheck");
 
 // Billing Address
-router.post("/billing", paymentController.postBilling);
-router.get("/billing", paymentController.getBillingInfo);
+router.post("/billing", tokenCheck, paymentController.postBilling);
+router.get("/billing", tokenCheck, paymentController.getBillingInfo);
 
 // Stripe Configuration
-router.get("/config", paymentController.getConfig);
+router.get("/config", tokenCheck, paymentController.getConfig);
 
 // Stripe Payments Intents
-router.post("/create-payment-intent", paymentController.postPaymentsIndent);
+router.post(
+  "/create-payment-intent",
+  tokenCheck,
+  paymentController.postPaymentsIndent
+);
 
 // Payments
-router.post("/", paymentController.postPayments);
-router.get("/all", paymentController.getAllPayments);
+router.post("/", tokenCheck, paymentController.postPayments);
+router.get("/all", tokenCheck, paymentController.getAllPayments);
 
 // Invoice
-router.get("/invoice", paymentController.getPaymentInvoice);
-router.get("/invoice/:id", paymentController.getInvoiceById);
+router.get("/invoice", tokenCheck, paymentController.getPaymentInvoice);
+router.get("/invoice/:id", tokenCheck, paymentController.getInvoiceById);
 
 module.exports = router;

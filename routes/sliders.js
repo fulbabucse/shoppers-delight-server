@@ -2,9 +2,10 @@
 const router = require("express").Router();
 
 const sliderController = require("../controllers/sliderController");
+const tokenCheck = require("../middleware/tokenCheck");
 
 router.get("/", sliderController.getSliders);
-router.post("/", sliderController.postSlider);
-router.delete("/:id", sliderController.deleteSingleSlider);
+router.post("/", tokenCheck, sliderController.postSlider);
+router.delete("/:id", tokenCheck, sliderController.deleteSingleSlider);
 
 module.exports = router;
